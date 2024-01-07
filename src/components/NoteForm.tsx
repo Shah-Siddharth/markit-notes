@@ -1,15 +1,33 @@
+import { FormEvent, useRef } from "react";
 import { Button, Col, Form, Row, Stack } from "react-bootstrap";
 import Creatable from "react-select/creatable";
+import { NoteData } from "../types";
 
-function NoteForm() {
+type NoteFormProps = {
+  onSubmit: (data: NoteData) => void
+}
+
+function NoteForm({ onSubmit }: NoteFormProps) {
+  const titleRef = useRef<HTMLInputElement>(null);
+  const markdownRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    onSubmit({
+      title: titleRef.current!.value,
+      markdown: markdownRef.current!.value,
+      tags: []
+    });
+  };
+
   return (
-    <Form>
+    <Form onSubmit={handleSubmit}>
       <Stack gap={4}>
         <Row>
           <Col>
             <Form.Group controlId="title">
               <Form.Label>Title</Form.Label>
-              <Form.Control required />
+              <Form.Control ref={titleRef} required />
             </Form.Group>
           </Col>
           <Col>
@@ -21,7 +39,7 @@ function NoteForm() {
         </Row>
         <Form.Group controlId="markdown">
           <Form.Label>Body</Form.Label>
-          <Form.Control required as="textarea" rows={15} />
+          <Form.Control ref={markdownRef} required as="textarea" rows={15} />
         </Form.Group>
         <Stack direction="horizontal" gap={2} className="justify-content-end">
           <Button type="submit" variant="success">Save</Button>
