@@ -1,7 +1,7 @@
-import { FormEvent, useRef } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { Button, Col, Form, Row, Stack } from "react-bootstrap";
 import Creatable from "react-select/creatable";
-import { NoteData } from "../types";
+import { NoteData, Tag } from "../types";
 
 type NoteFormProps = {
   onSubmit: (data: NoteData) => void
@@ -10,6 +10,7 @@ type NoteFormProps = {
 function NoteForm({ onSubmit }: NoteFormProps) {
   const titleRef = useRef<HTMLInputElement>(null);
   const markdownRef = useRef<HTMLTextAreaElement>(null);
+  const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -33,7 +34,17 @@ function NoteForm({ onSubmit }: NoteFormProps) {
           <Col>
             <Form.Group controlId="tags">
               <Form.Label>Tags</Form.Label>
-              <Creatable isMulti />
+              <Creatable
+                isMulti
+                value={selectedTags.map(tag => {
+                  return { label: tag.title, value: tag.id };
+                })}
+                onChange={(tags) => {
+                  setSelectedTags(tags.map(tag => {
+                    return { title: tag.label, id: tag.value };
+                  }))
+                }}
+              />
             </Form.Group>
           </Col>
         </Row>
