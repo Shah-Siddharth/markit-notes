@@ -8,7 +8,13 @@ export type NoteData = {
     tags: Tag[]
 };
 
+export type RawNoteData = {
+    title: string,
+    markdown: string,
+    tagIds: string[]
+};
+
 export type Tag = {
     id: string,
     title: string
-}
+};
